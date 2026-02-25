@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class Bob extends JPanel
@@ -25,9 +27,9 @@ public class Bob extends JPanel
 		Graphics2D g2 = (Graphics2D) window;
     	Image img1 = Toolkit.getDefaultToolkit().getImage("bob.png"); /*the image cannot be in the SRC folder*/
     	g2.drawImage(img1, x , y , w , h , this);
-			
 
 	}
+
 	
 	/*these allow us to see the dimensions */
 	public int getX() { return x; }

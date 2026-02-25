@@ -16,7 +16,7 @@ public class Runner extends JFrame
         setIconImage(image.getImage());
         setLocation(750,0);
         pack();
-        setResizable(false);
+        setResizable(true);
         setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
