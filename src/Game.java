@@ -1,11 +1,18 @@
 import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import javax.swing.*;
 
-public class Game extends JPanel
+public class Game extends JPanel implements Runnable , MouseListener
 {
     Piece[][] board=new Piece[10][9];
     int turn; //0-red 1-black
-
+    ArrayList<Piece> checks;
     public Game(){
         turn=0;
         this.setPreferredSize(new Dimension(910,1010));
@@ -41,8 +48,50 @@ public class Game extends JPanel
         board[7][1]=new Cannon(1,7,"Red_Cannon.png",0);
         board[7][7]=new Cannon(7,7,"Red_Cannon.png",0);
 
-
+        checks=new ArrayList<>();
+        addMouseListener(this);
+        new Thread(this).start();
     }
+    public void mouseClicked(MouseEvent e) {
+        Piece p = null;
+        int x=99;
+        int y=99;
+        if((((e.getX()-55)/100)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100)*100+85/2){
+            x=(e.getX()-55)/100;
+        }
+        else if((((e.getX()-55)/100+1)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100+1)*100+85/2){
+            x=(e.getX()-55)/100+1;
+        }
+        if((((e.getY()-55)/100)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100)*100+85/2){
+            y=(e.getY()-55)/100;
+        }
+        else if((((e.getY()-55)/100+1)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100+1)*100+85/2){
+            y=(e.getY()-55)/100+1;
+        }
+        boolean selected = false;
+        for(int i = 0; i < 9;i++){
+            for (int j = 0; j < 10; j++) {
+                if(55+100*i-85/2 > x && x<55+100*i+85/2 && 55+100*j-85/2<y && 55+100*j-85/2>y){
+
+                }
+            }
+        }
+        System.out.println(x+" " +y);
+        if(!selected){
+           // Piece p = board[x][y];
+        }
+    }
+    public void mousePressed(MouseEvent e) { }
+    /*2 mouseReleased -- when mouse button is released*/
+    public void mouseReleased(MouseEvent e) { }
+    /*3 mouseEntered -- when the mouse enters the window */
+    public void mouseEntered(MouseEvent e) { }
+    /*4 mouseExited -- when the mouse exits the window*/
+    public void mouseExited(MouseEvent e) { }
+    /*5 mouseClicked -- when the mouse button is pressed and released*/
+
+
+
     public void paintComponent( Graphics window ) {
         window.setColor(new Color(145,111,46));
         window.fillRect(0,0,910,1010);
@@ -58,11 +107,12 @@ public class Game extends JPanel
         window.setColor(new Color(145,111,46));
         Graphics2D g = (Graphics2D) window;
         g.setStroke(new BasicStroke(4));
-        for(int x=0;x<10;x++){
+        for(int x=1;x<8;x++){
             g.drawLine(55,x*100+55,855,x*100+55);
             g.drawLine(100*x+55,55,100*x+55,455);
             g.drawLine(100*x+55,555,100*x+55,955);
         }
+        g.drawLine(55,8*100+55,855,8*100+55);
         g.drawLine(355,55,555,255);
         g.drawLine(555,55,355,255);
         g.drawLine(355,755,555,955);
@@ -81,7 +131,6 @@ public class Game extends JPanel
     }
     public void run()
     {
-
         try
         {
             while( true )
