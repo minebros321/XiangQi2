@@ -12,11 +12,13 @@ public class Game extends JPanel implements Runnable , MouseListener
 {
     Piece[][] board=new Piece[10][9];
     int turn; //0-red 1-black
-    ArrayList<Piece> checks;
+    ArrayList<Point> checks;
+    Piece current;
     public Game(){
         turn=0;
         this.setPreferredSize(new Dimension(910,1010));
         board=new Piece[10][9];
+        current=null;
         //black
         board[0][0]=new Chariot(0,0,"Black_Chariot.png",1);
         board[0][8]=new Chariot(8,0,"Black_Chariot.png",1);
@@ -57,29 +59,49 @@ public class Game extends JPanel implements Runnable , MouseListener
         int x=99;
         int y=99;
         if((((e.getX()-55)/100)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100)*100+85/2){
-            x=(e.getX()-55)/100;
+            y=(e.getX()-55)/100;
         }
         else if((((e.getX()-55)/100+1)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100+1)*100+85/2){
-            x=(e.getX()-55)/100+1;
+            y=(e.getX()-55)/100+1;
         }
         if((((e.getY()-55)/100)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100)*100+85/2){
-            y=(e.getY()-55)/100;
+            x=(e.getY()-55)/100;
         }
         else if((((e.getY()-55)/100+1)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100+1)*100+85/2){
-            y=(e.getY()-55)/100+1;
+            x=(e.getY()-55)/100+1;
         }
-        boolean selected = false;
-        for(int i = 0; i < 9;i++){
-            for (int j = 0; j < 10; j++) {
-                if(55+100*i-85/2 > x && x<55+100*i+85/2 && 55+100*j-85/2<y && 55+100*j-85/2>y){
+        if(x!=99&&y!=99){
+            Boolean move=false;
+            if(checks!=null&&current!=null) {
+                for (Point t : checks) {
+                    if (t.x == y && t.y == x) {
+                        current.move(t.x,t.y);
+                        move = true;
+                        break;
+                    }
+                }
+                if(move){
+                    current.highlight=false;
+                    current=null;
+                    if(turn==1){
+                        turn=0;
+                    }
+                    else turn =1;
+                }
+            }
+            if(!move){
+                if(board[x][y]!=null&&board[x][y].color==turn){
+                    if(current!=null){
+                        current.highlight=false;
+                    }
+                    current=board[x][y];
+                    checks=current.check(board);
 
+                    System.out.println(checks);
                 }
             }
         }
-        System.out.println(x+" " +y);
-        if(!selected){
-           // Piece p = board[x][y];
-        }
+
     }
     public void mousePressed(MouseEvent e) { }
     /*2 mouseReleased -- when mouse button is released*/
@@ -125,6 +147,9 @@ public class Game extends JPanel implements Runnable , MouseListener
                 }
             }
         }
+        if(current!=null){
+            current.highlight=true;
+        }
 
 
 
@@ -135,7 +160,7 @@ public class Game extends JPanel implements Runnable , MouseListener
         {
             while( true )
             {
-                Thread.sleep(10);
+                Thread.sleep(5);
                 repaint();
             }
         }

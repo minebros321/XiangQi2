@@ -7,7 +7,7 @@ public class Chariot extends Piece {
     public Chariot(int ex, int wy, String i, int c) {
         super(ex, wy, i, c);
     }
-    public ArrayList<Point> check(){
+    public ArrayList<Point> check(Piece[][] p){
         return null;
     }
 }

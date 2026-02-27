@@ -7,7 +7,7 @@ public class Elephant extends Piece {
     public Elephant(int ex, int wy, String i, int c) {
         super(ex, wy, i, c);
     }
-    public ArrayList<Point> check(){
+    public ArrayList<Point> check(Piece[][] p){
         return null;
     }
 }
