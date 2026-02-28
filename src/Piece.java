@@ -28,12 +28,23 @@ public abstract class Piece extends JPanel{
 
     public void paint( Graphics window )
     {
-        if(highlight) {
-            window.setColor(new Color(124, 154, 114));
-            window.fillRect(x * 100 + 55 - 95 / 2, y * 100 + 55 - 95 / 2, 95, 95);
-        }
         Graphics2D g2 = (Graphics2D) window;
         Image img1 = Toolkit.getDefaultToolkit().getImage(image); /*the image cannot be in the SRC folder*/
-        g2.drawImage(img1, x*100+55-85/2 , y*100+55-85/2 , 85 , 85 , this);
+
+        if(highlight) {
+            float opacity = 0.7f; // 50% opacity
+            // Set the composite
+            AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+            g2.setComposite(ac);
+            g2.setColor(new Color(93, 156, 79));
+            window.fillRect(x * 100 + 60 - 50, y * 100 + 60 - 50, 100, 100);
+            opacity=1f;
+            ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+            g2.setComposite(ac);
+        }
+        g2.drawImage(img1, x*100+60-90/2 , y*100+60-90/2 , 90 , 90 , this);
+    }
+    public String toString(){
+        return "X:"+x+" Y:"+y+" "+image.substring(0,image.length()-4)+" Color:"+color;
     }
 }

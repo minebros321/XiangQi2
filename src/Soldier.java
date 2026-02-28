@@ -11,27 +11,27 @@ public class Soldier extends Piece {
         ArrayList<Point> out=new ArrayList<>();
         if(color==0){
             if(y<=4){
-                if(x>0&&p[x][y-1]==null||p[x][y-1].color==1){
-                    out.add(new Point(x,y-1));
+                if(x>0&&(p[x-1][y]==null||p[x-1][y].color==1)){
+                    out.add(new Point(x-1,y));
                 }
-                if(x<8&&p[x][y+1]==null||p[x][y+1].color==1){
-                    out.add(new Point(x,y+1));
+                if(x<8&&p[x+1][y]==null||p[x+1][y].color==1){
+                    out.add(new Point(x+1,y));
                 }
             }
-            if(y>0&&p[x][y-1]==null||p[x][y-1].color==1){
+            if(y>0&&(p[x][y-1]==null||p[x][y-1].color==1)){
                 out.add(new Point(x,y-1));
             }
         }
         if(color==1){
             if(y>4){
-                if(x>0&&p[x][y-1]==null||p[x][y-1].color==0){
-                    out.add(new Point(x,y-1));
+                if(x>0&&p[x-1][y]==null||p[x-1][y].color==1){
+                    out.add(new Point(x-1,y));
                 }
-                if(x<8&&p[x][y+1]==null||p[x][y+1].color==0){
-                    out.add(new Point(x,y+1));
+                if(x<8&&p[x+1][y]==null||p[x+1][y].color==1){
+                    out.add(new Point(x+1,y));
                 }
             }
-            if(y<9&&p[x][y+1]==null||p[x][y+1].color==0){
+            if(y<9&&p[x][y+1]==null||p[x][y+1].color==1){
                 out.add(new Point(x,y+1));
             }
         }

@@ -1,22 +1,21 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class Game extends JPanel implements Runnable , MouseListener
+public class Game extends JPanel implements Runnable , MouseListener, MouseMotionListener
 {
     Piece[][] board=new Piece[10][9];
     int turn; //0-red 1-black
     ArrayList<Point> checks;
+    Point hover;
     Piece current;
     public Game(){
         turn=0;
-        this.setPreferredSize(new Dimension(910,1010));
+        hover=new Point(0,0);
+        this.setPreferredSize(new Dimension(920,1020));
         board=new Piece[10][9];
         current=null;
         //black
@@ -52,52 +51,56 @@ public class Game extends JPanel implements Runnable , MouseListener
 
         checks=new ArrayList<>();
         addMouseListener(this);
+        addMouseMotionListener(this);
         new Thread(this).start();
     }
     public void mouseClicked(MouseEvent e) {
         Piece p = null;
         int x=99;
         int y=99;
-        if((((e.getX()-55)/100)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100)*100+85/2){
-            y=(e.getX()-55)/100;
+        if((((e.getX()-60)/100)*100)-85/2<(e.getX()-60)&&(e.getX()-60)<((e.getX()-60)/100)*100+85/2){
+            y=(e.getX()-60)/100;
         }
-        else if((((e.getX()-55)/100+1)*100)-85/2<(e.getX()-55)&&(e.getX()-55)<((e.getX()-55)/100+1)*100+85/2){
-            y=(e.getX()-55)/100+1;
+        else if((((e.getX()-60)/100+1)*100)-85/2<(e.getX()-60)&&(e.getX()-60)<((e.getX()-60)/100+1)*100+85/2){
+            y=(e.getX()-60)/100+1;
         }
-        if((((e.getY()-55)/100)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100)*100+85/2){
-            x=(e.getY()-55)/100;
+        if((((e.getY()-60)/100)*100)-85/2<(e.getY()-60)&&(e.getY()-60)<((e.getY()-60)/100)*100+85/2){
+            x=(e.getY()-60)/100;
         }
-        else if((((e.getY()-55)/100+1)*100)-85/2<(e.getY()-55)&&(e.getY()-55)<((e.getY()-55)/100+1)*100+85/2){
-            x=(e.getY()-55)/100+1;
+        else if((((e.getY()-60)/100+1)*100)-85/2<(e.getY()-60)&&(e.getY()-60)<((e.getY()-60)/100+1)*100+85/2){
+            x=(e.getY()-60)/100+1;
         }
         if(x!=99&&y!=99){
             Boolean move=false;
             if(checks!=null&&current!=null) {
-                for (Point t : checks) {
-                    if (t.x == y && t.y == x) {
+                for (Point t : checks) { //loop through checks
+                    if (t.x == y && t.y == x) { //does clicked square match one of checks
+                        if(board[x][y]!=null){ //capture
+                            board[x][y]=null;
+                        }
+                        board[current.y][current.x]=null;
                         current.move(t.x,t.y);
+                        board[x][y]=current;//move current piece
                         move = true;
                         break;
                     }
                 }
-                if(move){
+                if(move){ //did I move a piece
                     current.highlight=false;
                     current=null;
-                    if(turn==1){
-                        turn=0;
-                    }
+                    checks=null;
+                    if(turn==1)turn=0; //switch turns
                     else turn =1;
                 }
             }
-            if(!move){
-                if(board[x][y]!=null&&board[x][y].color==turn){
-                    if(current!=null){
+            if(!move){// did I not move a piece
+
+                if(board[x][y]!=null&&board[x][y].color==turn){//did I click on one of my pieces
+                    if(current!=null){//deselect current piece because I did not move
                         current.highlight=false;
                     }
-                    current=board[x][y];
-                    checks=current.check(board);
-
-                    System.out.println(checks);
+                    current=board[x][y];//select new piece
+                    checks=current.check(board);//add checks
                 }
             }
         }
@@ -111,34 +114,53 @@ public class Game extends JPanel implements Runnable , MouseListener
     /*4 mouseExited -- when the mouse exits the window*/
     public void mouseExited(MouseEvent e) { }
     /*5 mouseClicked -- when the mouse button is pressed and released*/
-
+    public void mouseDragged(MouseEvent e){  }
+    /*2 mouseMoved -- when mouse cursor is moved around the window*/
+    public void mouseMoved(MouseEvent e){
+        int x=99;
+        int y=99;
+        if((((e.getX()-60)/100)*100)-85/2<(e.getX()-60)&&(e.getX()-60)<((e.getX()-60)/100)*100+85/2){
+            y=(e.getX()-60)/100;
+        }
+        else if((((e.getX()-60)/100+1)*100)-85/2<(e.getX()-60)&&(e.getX()-60)<((e.getX()-60)/100+1)*100+85/2){
+            y=(e.getX()-60)/100+1;
+        }
+        if((((e.getY()-60)/100)*100)-85/2<(e.getY()-60)&&(e.getY()-60)<((e.getY()-60)/100)*100+85/2){
+            x=(e.getY()-60)/100;
+        }
+        else if((((e.getY()-60)/100+1)*100)-85/2<(e.getY()-60)&&(e.getY()-60)<((e.getY()-60)/100+1)*100+85/2){
+            x=(e.getY()-60)/100+1;
+        }
+        hover.x=y;
+        hover.y=x;
+    }
 
 
     public void paintComponent( Graphics window ) {
         window.setColor(new Color(145,111,46));
-        window.fillRect(0,0,910,1010);
+        window.fillRect(0,0,920,1020);
         window.setColor(new Color(211,194,129));
-        window.fillRect(8,8,894,994);
+        window.fillRect(10,10,900,1000);
         window.setColor(new Color(145,111,46));
-        window.fillRect(40,40,830,930);
+        window.fillRect(45,45,830,930);
         window.setColor(new Color(239,217,143));
-        window.fillRect(55,55,800,900);
-        // top left of board x:55 y:55
-        // bottom right of board x:855 y:955
+        window.fillRect(60,60,800,900);
+        // top left of board x:60 y:60
+        // bottom right of board x:860 y:960
         // board is 800 by 900
         window.setColor(new Color(145,111,46));
         Graphics2D g = (Graphics2D) window;
         g.setStroke(new BasicStroke(4));
         for(int x=1;x<8;x++){
-            g.drawLine(55,x*100+55,855,x*100+55);
-            g.drawLine(100*x+55,55,100*x+55,455);
-            g.drawLine(100*x+55,555,100*x+55,955);
+            g.drawLine(60,x*100+60,860,x*100+60);
+            g.drawLine(100*x+60,60,100*x+60,460);
+            g.drawLine(100*x+60,560,100*x+60,960);
         }
-        g.drawLine(55,8*100+55,855,8*100+55);
-        g.drawLine(355,55,555,255);
-        g.drawLine(555,55,355,255);
-        g.drawLine(355,755,555,955);
-        g.drawLine(555,755,355,955);
+        g.drawLine(60,8*100+60,860,8*100+60);
+        g.drawLine(360,60,560,260);
+        g.drawLine(560,60,360,260);
+        g.drawLine(360,760,560,960);
+        g.drawLine(560,760,360,960);
 
         for(int x=0;x<10;x++){
             for(int y=0;y<9;y++){
@@ -150,7 +172,28 @@ public class Game extends JPanel implements Runnable , MouseListener
         if(current!=null){
             current.highlight=true;
         }
-
+        float opacity = 0.7f; // 50% opacity
+        // Set the composite
+        AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+        g.setComposite(ac);
+        if(checks!=null) {
+            for (Point t : checks) {
+                if(hover.x==t.x&&hover.y==t.y){
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));
+                    g.setColor(new Color(93, 156, 79));
+                    window.fillRect(t.x * 100 + 60 - 50, t.y * 100 + 60 - 50, 100, 100);
+                }
+                else {
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.7f));
+                    g.setColor(new Color(93, 156, 79));
+                    if (board[t.y][t.x] != null) {
+                        window.fillRect(t.x * 100 + 60 - 85 / 2, t.y * 100 + 60 - 85 / 2, 85, 85);
+                    } else {
+                        window.fillOval(t.x * 100 + 60 - 15, t.y * 100 + 60 - 15, 30, 30);
+                    }
+                }
+            }
+        }
 
 
     }
